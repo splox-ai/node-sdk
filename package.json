@@ -1,0 +1,59 @@
+{
+  "name": "splox",
+  "version": "0.1.0",
+  "description": "Official Node.js/TypeScript SDK for the Splox API",
+  "author": "Splox <hello@splox.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/splox-ai/node-sdk.git"
+  },
+  "homepage": "https://docs.splox.io",
+  "bugs": {
+    "url": "https://github.com/splox-ai/node-sdk/issues"
+  },
+  "keywords": [
+    "splox",
+    "ai",
+    "workflow",
+    "agent",
+    "sdk",
+    "api"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0",
+    "@types/node": "^20.0.0"
+  }
+}
