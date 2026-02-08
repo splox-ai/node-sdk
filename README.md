@@ -104,8 +104,32 @@ const { chats } = await client.chats.listForResource("api", "version_id");
 // Listen to chat events (SSE)
 const chatStream = await client.chats.listen(chat.id);
 for await (const event of chatStream) {
-  console.log(event);
+  if (event.eventType === "text_delta") {
+    process.stdout.write(event.textDelta ?? "");
+  } else if (event.eventType === "tool_call_start") {
+    console.log(`\nCalling tool: ${event.toolName}`);
+  } else if (event.eventType === "done") {
+    console.log("\nIteration complete");
+  }
+
+  // Stop when workflow completes
+  if (event.workflow_request?.status === "completed") {
+    chatStream.close();
+    break;
+  }
 }
+
+/**
+ * Event types:
+ * - "text_delta": textDelta contains streamed text
+ * - "reasoning_delta": reasoningDelta contains thinking
+ * - "tool_call_start": toolCallId, toolName
+ * - "tool_call_delta": toolCallId, toolArgsDelta
+ * - "tool_complete": toolName, toolCallId, toolResult
+ * - "tool_error": toolName, toolCallId, error
+ * - "done": iteration complete
+ * - "error": error message
+ */
 
 // Get message history
 const { messages, has_more } = await client.chats.getHistory(chat.id, { limit: 50 });

@@ -172,6 +172,24 @@ export interface Pagination {
 
 // ── SSE ──────────────────────────────────────────────────────────────────────
 
+/**
+ * A Server-Sent Event from a listen stream.
+ *
+ * For chat events, check `eventType`:
+ * - "text_delta": `textDelta` contains the streamed text chunk
+ * - "reasoning_delta": `reasoningDelta` contains thinking text
+ * - "tool_call_start": Tool call initiated (`toolCallId`, `toolName`)
+ * - "tool_call_delta": Tool call args delta (`toolCallId`, `toolArgsDelta`)
+ * - "tool_start": Tool execution started (`toolName`, `toolCallId`)
+ * - "tool_complete": Tool finished (`toolName`, `toolCallId`, `toolResult`)
+ * - "tool_error": Tool failed (`toolName`, `toolCallId`, `error`)
+ * - "tool_approval_request": Approval needed (`toolName`, `toolCallId`, `toolArgs`)
+ * - "tool_approval_response": Approval result (`toolName`, `toolCallId`, `approved`)
+ * - "user_message": Voice transcript (`text`)
+ * - "done": Iteration complete
+ * - "stopped": User stopped workflow
+ * - "error": Error occurred (`error`)
+ */
 export interface SSEEvent {
   workflow_request?: WorkflowRequest;
   node_execution?: NodeExecution;
@@ -179,6 +197,48 @@ export interface SSEEvent {
   isKeepalive: boolean;
   /** Raw `data:` payload before parsing. */
   rawData: string;
+
+  // Event type and metadata
+  /** The type of chat event. */
+  eventType?: string;
+  /** The iteration number within the agent loop. */
+  iteration?: number;
+  /** The workflow request ID for this run. */
+  runId?: string;
+
+  // Text streaming
+  /** Streamed text chunk (for "text_delta" events). */
+  textDelta?: string;
+
+  // Reasoning/thinking
+  /** Reasoning/thinking text (for "reasoning_delta" events). */
+  reasoningDelta?: string;
+  /** Type of reasoning: "thinking" or "redacted_thinking". */
+  reasoningType?: string;
+
+  // Tool calls
+  /** Tool call ID. */
+  toolCallId?: string;
+  /** Tool name. */
+  toolName?: string;
+  /** Tool arguments delta (incremental JSON). */
+  toolArgsDelta?: string;
+  /** Tool arguments (for approval requests). */
+  toolArgs?: unknown;
+  /** Tool result (for "tool_complete" events). */
+  toolResult?: unknown;
+
+  // Tool approval
+  /** Whether the tool was approved (for "tool_approval_response"). */
+  approved?: boolean;
+
+  // Messages and errors
+  /** Text content (for "user_message" events). */
+  text?: string;
+  /** Status message (for "stopped" events). */
+  message?: string;
+  /** Error message (for "error" events). */
+  error?: string;
 }
 
 // ── Response wrappers ────────────────────────────────────────────────────────

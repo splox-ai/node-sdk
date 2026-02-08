@@ -1,6 +1,28 @@
 import { StreamError } from "./errors.js";
 import type { SSEEvent, NodeExecution, WorkflowRequest } from "./types.js";
 
+/** Raw SSE event payload shape. */
+interface RawSSEPayload {
+  workflow_request?: WorkflowRequest;
+  node_execution?: NodeExecution;
+  node_exec?: NodeExecution;
+  type?: string;
+  iteration?: number;
+  run_id?: string;
+  delta?: string;
+  reasoning_delta?: string;
+  reasoning_type?: string;
+  tool_call_id?: string;
+  tool_name?: string;
+  tool_args_delta?: string;
+  args?: unknown;
+  result?: unknown;
+  approved?: boolean;
+  text?: string;
+  message?: string;
+  error?: string;
+}
+
 /**
  * Async iterator over Server-Sent Events.
  *
@@ -53,15 +75,28 @@ export class SSEStream implements AsyncIterable<SSEEvent> {
           }
 
           try {
-            const parsed = JSON.parse(payload) as {
-              workflow_request?: WorkflowRequest;
-              node_execution?: NodeExecution;
-            };
+            const parsed = JSON.parse(payload) as RawSSEPayload;
             yield {
               workflow_request: parsed.workflow_request,
-              node_execution: parsed.node_execution,
+              node_execution: parsed.node_execution ?? parsed.node_exec,
               isKeepalive: false,
               rawData: payload,
+              // Chat streaming fields
+              eventType: parsed.type,
+              iteration: parsed.iteration,
+              runId: parsed.run_id,
+              textDelta: parsed.delta,
+              reasoningDelta: parsed.reasoning_delta,
+              reasoningType: parsed.reasoning_type,
+              toolCallId: parsed.tool_call_id,
+              toolName: parsed.tool_name,
+              toolArgsDelta: parsed.tool_args_delta,
+              toolArgs: parsed.args,
+              toolResult: parsed.result,
+              approved: parsed.approved,
+              text: parsed.text,
+              message: parsed.message,
+              error: parsed.error,
             };
           } catch {
             // JSON parse failed — yield raw event
