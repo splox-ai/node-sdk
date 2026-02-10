@@ -399,3 +399,53 @@ export interface MemoryActionResponse {
   messages?: MemoryMessage[];
   remaining_count?: number;
 }
+
+// ── MCP Catalog ──────────────────────────────────────────────────────────────
+
+export interface MCPCatalogItem {
+  id: string;
+  name: string;
+  description?: string;
+  url: string;
+  transport_type: string;
+  auth_type: string;
+  auth_config?: Record<string, unknown>;
+  image_url?: string;
+  category?: string;
+  is_featured: boolean;
+  display_order?: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MCPCatalogResponse {
+  mcp_server: MCPCatalogItem;
+}
+
+export interface MCPCatalogListResponse {
+  mcp_servers: MCPCatalogItem[];
+  current_page: number;
+  per_page: number;
+  total_count: number;
+  total_pages: number;
+}
+
+// ── MCP Connections ──────────────────────────────────────────────────────────
+
+export interface MCPConnection {
+  id: string;
+  user_id: string;
+  name: string;
+  url: string;
+  image_url?: string;
+  transport_type: string;
+  auth_type: string;
+  auth_config?: Record<string, unknown>;
+  end_user_id?: string;
+  created_at: string;
+}
+
+export interface MCPConnectionListResponse {
+  connections: MCPConnection[];
+  total: number;
+}

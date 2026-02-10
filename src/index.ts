@@ -7,6 +7,7 @@ export { ChatService } from "./chats.js";
 export { EventService } from "./events.js";
 export { BillingService } from "./billing.js";
 export { MemoryService } from "./memory.js";
+export { MCPService, generateConnectionToken, generateConnectionLink } from "./mcp.js";
 
 // Parameter types
 export type { SploxOptions, RequestOptions } from "./client.js";
@@ -23,6 +24,7 @@ export type {
   MemoryExportParams,
   MemoryDeleteParams,
 } from "./memory.js";
+export type { CatalogParams, ConnectionParams } from "./mcp.js";
 
 // SSE
 export { SSEStream } from "./sse.js";
@@ -79,4 +81,9 @@ export type {
   MemoryListResponse,
   MemoryGetResponse,
   MemoryActionResponse,
+  MCPCatalogItem,
+  MCPCatalogResponse,
+  MCPCatalogListResponse,
+  MCPConnection,
+  MCPConnectionListResponse,
 } from "./types.js";

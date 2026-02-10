@@ -4,6 +4,7 @@ import { ChatService } from "./chats.js";
 import { EventService } from "./events.js";
 import { BillingService } from "./billing.js";
 import { MemoryService } from "./memory.js";
+import { MCPService } from "./mcp.js";
 
 const DEFAULT_BASE_URL = "https://app.splox.io/api/v1";
 
@@ -49,6 +50,7 @@ export class Splox {
   readonly events: EventService;
   readonly billing: BillingService;
   readonly memory: MemoryService;
+  readonly mcp: MCPService;
 
   constructor(apiKey?: string, options?: SploxOptions) {
     const key = apiKey ?? (typeof process !== "undefined" ? process.env.SPLOX_API_KEY : undefined) ?? "";
@@ -68,5 +70,6 @@ export class Splox {
     this.events = new EventService(transport);
     this.billing = new BillingService(transport);
     this.memory = new MemoryService(transport);
+    this.mcp = new MCPService(transport);
   }
 }
