@@ -4,7 +4,7 @@
 [![CI](https://github.com/splox-ai/node-sdk/actions/workflows/test.yml/badge.svg)](https://github.com/splox-ai/node-sdk/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Official Node.js/TypeScript SDK for the [Splox API](https://docs.splox.io). Zero dependencies — uses the built-in `fetch` API (Node.js ≥ 18).
+Official Node.js/TypeScript SDK for the [Splox API](https://docs.splox.io). Zero dependencies — uses the built-in `fetch` and Web Crypto APIs (Node.js ≥ 18).
 
 ## Install
 
@@ -193,6 +193,69 @@ await client.memory.delete("session_id", {
 });
 ```
 
+## MCP (Model Context Protocol)
+
+Browse the MCP server catalog, manage end-user connections, and generate credential-submission links.
+
+### Catalog
+
+```ts
+// Search the MCP catalog
+const catalog = await client.mcp.listCatalog({ search: "github", per_page: 10 });
+for (const server of catalog.mcp_servers) {
+  console.log(`${server.name} — ${server.url}`);
+}
+
+// Get featured servers
+const featured = await client.mcp.listCatalog({ featured: true });
+
+// Get a single catalog item
+const item = await client.mcp.getCatalogItem("mcp-server-id");
+console.log(item.name, item.auth_type);
+```
+
+### Connections
+
+```ts
+// List all end-user connections
+const { connections, total } = await client.mcp.listConnections();
+
+// Filter by MCP server or end-user
+const filtered = await client.mcp.listConnections({
+  mcp_server_id: "server-id",
+  end_user_id: "user-123",
+});
+
+// Delete a connection
+await client.mcp.deleteConnection("connection-id");
+```
+
+### Connection Token & Link
+
+Generate signed JWTs for end-user credential submission — no API call required:
+
+```ts
+import { generateConnectionToken, generateConnectionLink } from "splox";
+
+// Generate a token (expires in 1 hour)
+const token = await generateConnectionToken(
+  "mcp-server-id",
+  "owner-user-id",
+  "end-user-id",
+  "your-credentials-encryption-key",
+);
+
+// Generate a full connection link
+const link = await generateConnectionLink(
+  "https://app.splox.io",
+  "mcp-server-id",
+  "owner-user-id",
+  "end-user-id",
+  "your-credentials-encryption-key",
+);
+// → https://app.splox.io/tools/connect?token=eyJhbG...
+```
+
 ## Events (Webhooks)
 
 ```ts
@@ -259,9 +322,27 @@ const client = new Splox("api-key", {
 });
 ```
 
+### `client.mcp`
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `listCatalog(params?)` | `MCPCatalogListResponse` | Search/list MCP catalog (paginated) |
+| `getCatalogItem(id)` | `MCPCatalogItem` | Get a single catalog item |
+| `listConnections(params?)` | `MCPConnectionListResponse` | List end-user connections |
+| `deleteConnection(id)` | `void` | Delete an end-user connection |
+| `generateConnectionToken(...)` | `string` | Create a signed JWT (1 hr expiry) |
+| `generateConnectionLink(...)` | `string` | Build a full connection URL |
+
+### Standalone functions
+
+| Function | Returns | Description |
+|----------|---------|-------------|
+| `generateConnectionToken(serverID, ownerID, endUserID, key)` | `Promise<string>` | Create a signed JWT |
+| `generateConnectionLink(baseURL, serverID, ownerID, endUserID, key)` | `Promise<string>` | Build a full connection URL |
+
 ## Requirements
 
-- **Node.js ≥ 18** (uses native `fetch`)
+- **Node.js ≥ 18** (uses native `fetch` and Web Crypto API)
 - **TypeScript ≥ 5.0** (optional, full type definitions included)
 
 ## License
