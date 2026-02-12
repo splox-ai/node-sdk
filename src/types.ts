@@ -461,38 +461,34 @@ export interface MCPExecuteToolResponse {
   is_error: boolean;
 }
 
-export interface MCPToolSummary {
-  slug: string;
-  description?: string;
-}
-
-export interface MCPConnectionRef {
-  mcp_server_id: string;
+export interface UserMCPServer {
+  id: string;
+  user_id: string;
   name: string;
+  url: string;
+  image_url?: string;
+  transport_type: string;
+  auth_type: string;
+  is_system?: boolean;
+  credential_expires_at?: string;
+  created_at: string;
+  updated_at: string;
+  status?: string;
+  has_credential?: boolean;
 }
 
-export interface MCPUserConnectionGroup {
-  tools: MCPToolSummary[];
-  mcp_url: string;
-  connections: MCPConnectionRef[];
-}
-
-export interface MCPUserConnectionsResponse {
-  connections: MCPUserConnectionGroup[];
+export interface UserMCPServerListResponse {
+  servers: UserMCPServer[];
   total: number;
 }
 
-export interface MCPSearchResult {
-  name: string;
-  description?: string;
-  is_user_connected: boolean;
-  connect_link?: string;
-  mcp_url?: string;
+export interface MCPServerToolOption {
+  label: string;
+  value: string;
 }
 
-export interface MCPSearchResponse {
-  results: MCPSearchResult[];
+export interface MCPServerToolsResponse {
+  options: MCPServerToolOption[];
   total: number;
   limit: number;
-  offset: number;
 }

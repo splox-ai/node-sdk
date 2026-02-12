@@ -7,8 +7,8 @@ import type {
   MCPCatalogResponse,
   MCPConnectionListResponse,
   MCPExecuteToolResponse,
-  MCPSearchResponse,
-  MCPUserConnectionsResponse,
+  MCPServerToolsResponse,
+  UserMCPServerListResponse,
 } from "./types.js";
 
 // ── Parameter types ──────────────────────────────────────────────────────────
@@ -38,15 +38,6 @@ export interface ExecuteToolParams {
   tool_slug: string;
   /** Tool input arguments. */
   args?: Record<string, unknown>;
-}
-
-export interface SearchMCPParams {
-  /** Search query for MCP name/description/url. */
-  search_query?: string;
-  /** Maximum number of catalog results (default 10, max 100). */
-  limit?: number;
-  /** Pagination offset (default 0). */
-  offset?: number;
 }
 
 // ── Service ──────────────────────────────────────────────────────────────────
@@ -138,30 +129,24 @@ export class MCPService {
     });
   }
 
-  /** List caller-owned MCP connections grouped by MCP URL, including available tools. */
-  async listUserConnections(options?: RequestOptions): Promise<MCPUserConnectionsResponse> {
+  /** List caller-owned MCP servers. */
+  async listUserServers(options?: RequestOptions): Promise<UserMCPServerListResponse> {
     return this.transport.request({
-      method: "POST",
-      path: "/mcp-tools/list-user-connections",
-      body: {},
+      method: "GET",
+      path: "/user-mcp-servers",
       signal: options?.signal,
       headers: options?.headers,
     });
   }
 
-  /** Search MCP servers with connection status, matching tool_router behavior. */
-  async search(
-    params?: SearchMCPParams,
+  /** List tools for a caller-owned MCP server. */
+  async getServerTools(
+    mcpServerId: string,
     options?: RequestOptions,
-  ): Promise<MCPSearchResponse> {
+  ): Promise<MCPServerToolsResponse> {
     return this.transport.request({
-      method: "POST",
-      path: "/mcp-tools/search",
-      body: {
-        search_query: params?.search_query ?? "",
-        limit: params?.limit,
-        offset: params?.offset,
-      },
+      method: "GET",
+      path: `/user-mcp-servers/${mcpServerId}/tools`,
       signal: options?.signal,
       headers: options?.headers,
     });
