@@ -18,9 +18,9 @@ describe.skipIf(!apiKey)("MCP integration tests", () => {
   });
 
   it("lists user MCP connections", async () => {
-    const resp = await client.mcp.listUserServers();
+    const resp = await client.mcp.listConnections({ scope: "owner_user" });
     expect(resp.total).toBeGreaterThanOrEqual(0);
-    expect(Array.isArray(resp.servers)).toBe(true);
+    expect(Array.isArray(resp.connections)).toBe(true);
   });
 
   it("searches MCP servers", async () => {
@@ -31,9 +31,9 @@ describe.skipIf(!apiKey)("MCP integration tests", () => {
     expect(catalog.total_count).toBeGreaterThanOrEqual(0);
     expect(Array.isArray(catalog.mcp_servers)).toBe(true);
 
-    const servers = await client.mcp.listUserServers();
-    if (servers.servers.length > 0) {
-      const tools = await client.mcp.getServerTools(servers.servers[0].id);
+    const servers = await client.mcp.listConnections({ scope: "owner_user" });
+    if (servers.connections.length > 0) {
+      const tools = await client.mcp.getServerTools(servers.connections[0].id);
       expect(tools.total).toBeGreaterThanOrEqual(0);
       expect(Array.isArray(tools.options)).toBe(true);
     }

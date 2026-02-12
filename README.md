@@ -220,6 +220,11 @@ console.log(item.name, item.auth_type);
 // List all end-user connections
 const { connections, total } = await client.mcp.listConnections();
 
+// List owner-user MCP servers via the same endpoint
+const ownerServers = await client.mcp.listConnections({
+  scope: "owner_user",
+});
+
 // Filter by MCP server or end-user
 const filtered = await client.mcp.listConnections({
   mcp_server_id: "server-id",
@@ -328,7 +333,7 @@ const client = new Splox("api-key", {
 |--------|---------|-------------|
 | `listCatalog(params?)` | `MCPCatalogListResponse` | Search/list MCP catalog (paginated) |
 | `getCatalogItem(id)` | `MCPCatalogItem` | Get a single catalog item |
-| `listConnections(params?)` | `MCPConnectionListResponse` | List end-user connections |
+| `listConnections(params?)` | `MCPConnectionListResponse` | List MCP links by identity scope (`end_user` or `owner_user`) |
 | `deleteConnection(id)` | `void` | Delete an end-user connection |
 | `generateConnectionToken(...)` | `string` | Create a signed JWT (1 hr expiry) |
 | `generateConnectionLink(...)` | `string` | Build a full connection URL |

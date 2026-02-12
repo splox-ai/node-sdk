@@ -88,8 +88,6 @@ export type {
   MCPConnectionListResponse,
   MCPExecuteToolResult,
   MCPExecuteToolResponse,
-  UserMCPServer,
-  UserMCPServerListResponse,
   MCPServerToolOption,
   MCPServerToolsResponse,
 } from "./types.js";

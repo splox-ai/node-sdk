@@ -461,27 +461,6 @@ export interface MCPExecuteToolResponse {
   is_error: boolean;
 }
 
-export interface UserMCPServer {
-  id: string;
-  user_id: string;
-  name: string;
-  url: string;
-  image_url?: string;
-  transport_type: string;
-  auth_type: string;
-  is_system?: boolean;
-  credential_expires_at?: string;
-  created_at: string;
-  updated_at: string;
-  status?: string;
-  has_credential?: boolean;
-}
-
-export interface UserMCPServerListResponse {
-  servers: UserMCPServer[];
-  total: number;
-}
-
 export interface MCPServerToolOption {
   label: string;
   value: string;

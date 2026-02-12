@@ -8,7 +8,6 @@ import type {
   MCPConnectionListResponse,
   MCPExecuteToolResponse,
   MCPServerToolsResponse,
-  UserMCPServerListResponse,
 } from "./types.js";
 
 // ── Parameter types ──────────────────────────────────────────────────────────
@@ -25,6 +24,8 @@ export interface CatalogParams {
 }
 
 export interface ConnectionParams {
+  /** Listing scope. Use "end_user" for end-user links or "owner_user" for owner-configured servers. */
+  scope?: "end_user" | "owner_user";
   /** Filter by MCP server ID. */
   mcp_server_id?: string;
   /** Filter by end-user ID. */
@@ -90,6 +91,7 @@ export class MCPService {
     return this.transport.request({
       method: "GET",
       path: addParams("/mcp-connections", {
+        scope: params?.scope,
         mcp_server_id: params?.mcp_server_id,
         end_user_id: params?.end_user_id,
       }),
@@ -124,16 +126,6 @@ export class MCPService {
         tool_slug: params.tool_slug,
         args: params.args ?? {},
       },
-      signal: options?.signal,
-      headers: options?.headers,
-    });
-  }
-
-  /** List caller-owned MCP servers. */
-  async listUserServers(options?: RequestOptions): Promise<UserMCPServerListResponse> {
-    return this.transport.request({
-      method: "GET",
-      path: "/user-mcp-servers",
       signal: options?.signal,
       headers: options?.headers,
     });
