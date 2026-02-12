@@ -449,3 +449,50 @@ export interface MCPConnectionListResponse {
   connections: MCPConnection[];
   total: number;
 }
+
+export interface MCPExecuteToolResult {
+  content?: unknown[];
+  structuredContent?: unknown;
+  isError?: boolean;
+}
+
+export interface MCPExecuteToolResponse {
+  result: MCPExecuteToolResult;
+  is_error: boolean;
+}
+
+export interface MCPToolSummary {
+  slug: string;
+  description?: string;
+}
+
+export interface MCPConnectionRef {
+  mcp_server_id: string;
+  name: string;
+}
+
+export interface MCPUserConnectionGroup {
+  tools: MCPToolSummary[];
+  mcp_url: string;
+  connections: MCPConnectionRef[];
+}
+
+export interface MCPUserConnectionsResponse {
+  connections: MCPUserConnectionGroup[];
+  total: number;
+}
+
+export interface MCPSearchResult {
+  name: string;
+  description?: string;
+  is_user_connected: boolean;
+  connect_link?: string;
+  mcp_url?: string;
+}
+
+export interface MCPSearchResponse {
+  results: MCPSearchResult[];
+  total: number;
+  limit: number;
+  offset: number;
+}

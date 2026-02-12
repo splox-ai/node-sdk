@@ -24,7 +24,7 @@ export type {
   MemoryExportParams,
   MemoryDeleteParams,
 } from "./memory.js";
-export type { CatalogParams, ConnectionParams } from "./mcp.js";
+export type { CatalogParams, ConnectionParams, ExecuteToolParams, SearchMCPParams } from "./mcp.js";
 
 // SSE
 export { SSEStream } from "./sse.js";
@@ -86,4 +86,12 @@ export type {
   MCPCatalogListResponse,
   MCPConnection,
   MCPConnectionListResponse,
+  MCPExecuteToolResult,
+  MCPExecuteToolResponse,
+  MCPToolSummary,
+  MCPConnectionRef,
+  MCPUserConnectionGroup,
+  MCPUserConnectionsResponse,
+  MCPSearchResult,
+  MCPSearchResponse,
 } from "./types.js";

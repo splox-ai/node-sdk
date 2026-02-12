@@ -6,6 +6,9 @@ import type {
   MCPCatalogListResponse,
   MCPCatalogResponse,
   MCPConnectionListResponse,
+  MCPExecuteToolResponse,
+  MCPSearchResponse,
+  MCPUserConnectionsResponse,
 } from "./types.js";
 
 // ── Parameter types ──────────────────────────────────────────────────────────
@@ -26,6 +29,24 @@ export interface ConnectionParams {
   mcp_server_id?: string;
   /** Filter by end-user ID. */
   end_user_id?: string;
+}
+
+export interface ExecuteToolParams {
+  /** MCP server UUID configured by the authenticated user. */
+  mcp_server_id: string;
+  /** Tool name/slug on that MCP server. */
+  tool_slug: string;
+  /** Tool input arguments. */
+  args?: Record<string, unknown>;
+}
+
+export interface SearchMCPParams {
+  /** Search query for MCP name/description/url. */
+  search_query?: string;
+  /** Maximum number of catalog results (default 10, max 100). */
+  limit?: number;
+  /** Pagination offset (default 0). */
+  offset?: number;
 }
 
 // ── Service ──────────────────────────────────────────────────────────────────
@@ -94,6 +115,53 @@ export class MCPService {
     await this.transport.request({
       method: "DELETE",
       path: `/mcp-connections/${id}`,
+      signal: options?.signal,
+      headers: options?.headers,
+    });
+  }
+
+  /** Execute a tool on a caller-owned MCP server. */
+  async executeTool(
+    params: ExecuteToolParams,
+    options?: RequestOptions,
+  ): Promise<MCPExecuteToolResponse> {
+    return this.transport.request({
+      method: "POST",
+      path: "/mcp-tools/execute",
+      body: {
+        mcp_server_id: params.mcp_server_id,
+        tool_slug: params.tool_slug,
+        args: params.args ?? {},
+      },
+      signal: options?.signal,
+      headers: options?.headers,
+    });
+  }
+
+  /** List caller-owned MCP connections grouped by MCP URL, including available tools. */
+  async listUserConnections(options?: RequestOptions): Promise<MCPUserConnectionsResponse> {
+    return this.transport.request({
+      method: "POST",
+      path: "/mcp-tools/list-user-connections",
+      body: {},
+      signal: options?.signal,
+      headers: options?.headers,
+    });
+  }
+
+  /** Search MCP servers with connection status, matching tool_router behavior. */
+  async search(
+    params?: SearchMCPParams,
+    options?: RequestOptions,
+  ): Promise<MCPSearchResponse> {
+    return this.transport.request({
+      method: "POST",
+      path: "/mcp-tools/search",
+      body: {
+        search_query: params?.search_query ?? "",
+        limit: params?.limit,
+        offset: params?.offset,
+      },
       signal: options?.signal,
       headers: options?.headers,
     });
