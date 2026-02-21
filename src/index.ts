@@ -8,6 +8,7 @@ export { EventService } from "./events.js";
 export { BillingService } from "./billing.js";
 export { MemoryService } from "./memory.js";
 export { MCPService, generateConnectionToken, generateConnectionLink } from "./mcp.js";
+export { LLMService } from "./llm.js";
 
 // Parameter types
 export type { SploxOptions, RequestOptions } from "./client.js";
@@ -25,6 +26,7 @@ export type {
   MemoryDeleteParams,
 } from "./memory.js";
 export type { CatalogParams, ConnectionParams, ExecuteToolParams } from "./mcp.js";
+export type { ChatParams } from "./llm.js";
 
 // SSE
 export { SSEStream } from "./sse.js";
@@ -90,4 +92,12 @@ export type {
   MCPExecuteToolResponse,
   MCPServerToolOption,
   MCPServerToolsResponse,
+  WorkflowSecretMetadata,
+  EndUserSecretsSummary,
+  GenerateSecretsLinkResponse,
+  SecretActionResponse,
+  ChatCompletion,
+  ChatCompletionChoice,
+  ChatCompletionMessage,
+  ChatCompletionUsage,
 } from "./types.js";

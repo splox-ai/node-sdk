@@ -12,6 +12,10 @@ import type {
   ExecutionTreeResponse,
   HistoryResponse,
   WorkflowRequestFile,
+  WorkflowSecretMetadata,
+  EndUserSecretsSummary,
+  GenerateSecretsLinkResponse,
+  SecretActionResponse,
 } from "./types.js";
 import { TimeoutError } from "./errors.js";
 
@@ -209,5 +213,98 @@ export class WorkflowService {
 
     // Stream ended without terminal status — fetch tree anyway
     return this.getExecutionTree(workflow_request_id);
+  }
+
+  // ── Secrets ──────────────────────────────────────────────────────────────
+
+  /** List secret keys for a workflow (values are never returned). */
+  async listSecrets(
+    workflowId: string,
+    params?: { end_user_id?: string },
+    options?: RequestOptions,
+  ): Promise<WorkflowSecretMetadata[]> {
+    return this.transport.request({
+      method: "GET",
+      path: addParams(`/workflows/${workflowId}/secrets`, {
+        end_user_id: params?.end_user_id,
+      }),
+      signal: options?.signal,
+      headers: options?.headers,
+    });
+  }
+
+  /** Create or update an environment-variable secret. */
+  async setEnvSecret(
+    workflowId: string,
+    params: { key: string; value: string; end_user_id?: string },
+    options?: RequestOptions,
+  ): Promise<SecretActionResponse> {
+    return this.transport.request({
+      method: "POST",
+      path: `/workflows/${workflowId}/secrets/env`,
+      body: params,
+      signal: options?.signal,
+      headers: options?.headers,
+    });
+  }
+
+  /** Create or update a file-type secret (S3 URL). */
+  async setFileSecret(
+    workflowId: string,
+    params: { key: string; s3_url: string; end_user_id?: string },
+    options?: RequestOptions,
+  ): Promise<SecretActionResponse> {
+    return this.transport.request({
+      method: "POST",
+      path: `/workflows/${workflowId}/secrets/file`,
+      body: params,
+      signal: options?.signal,
+      headers: options?.headers,
+    });
+  }
+
+  /** Delete a secret from a workflow. */
+  async deleteSecret(
+    workflowId: string,
+    key: string,
+    params?: { end_user_id?: string },
+    options?: RequestOptions,
+  ): Promise<SecretActionResponse> {
+    return this.transport.request({
+      method: "DELETE",
+      path: addParams(`/workflows/${workflowId}/secrets/${key}`, {
+        end_user_id: params?.end_user_id,
+      }),
+      signal: options?.signal,
+      headers: options?.headers,
+    });
+  }
+
+  /** List all end-user secrets grouped by end_user_id. */
+  async listEndUserSecrets(
+    workflowId: string,
+    options?: RequestOptions,
+  ): Promise<EndUserSecretsSummary[]> {
+    return this.transport.request({
+      method: "GET",
+      path: `/workflows/${workflowId}/secrets/end-users`,
+      signal: options?.signal,
+      headers: options?.headers,
+    });
+  }
+
+  /** Generate a public link for an end-user to submit secrets. */
+  async generateSecretsLink(
+    workflowId: string,
+    params: { end_user_id: string },
+    options?: RequestOptions,
+  ): Promise<GenerateSecretsLinkResponse> {
+    return this.transport.request({
+      method: "POST",
+      path: `/workflows/${workflowId}/secrets/generate-link`,
+      body: params,
+      signal: options?.signal,
+      headers: options?.headers,
+    });
   }
 }

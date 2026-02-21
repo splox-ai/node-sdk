@@ -5,6 +5,7 @@ import { EventService } from "./events.js";
 import { BillingService } from "./billing.js";
 import { MemoryService } from "./memory.js";
 import { MCPService } from "./mcp.js";
+import { LLMService } from "./llm.js";
 
 const DEFAULT_BASE_URL = "https://app.splox.io/api/v1";
 
@@ -51,6 +52,7 @@ export class Splox {
   readonly billing: BillingService;
   readonly memory: MemoryService;
   readonly mcp: MCPService;
+  readonly llm: LLMService;
 
   constructor(apiKey?: string, options?: SploxOptions) {
     const key = apiKey ?? (typeof process !== "undefined" ? process.env.SPLOX_API_KEY : undefined) ?? "";
@@ -71,5 +73,14 @@ export class Splox {
     this.billing = new BillingService(transport);
     this.memory = new MemoryService(transport);
     this.mcp = new MCPService(transport);
+    this.llm = new LLMService(transport);
+  }
+
+  async notify(webhookUrl: string, data: unknown): Promise<void> {
+    await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
   }
 }

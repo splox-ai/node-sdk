@@ -471,3 +471,60 @@ export interface MCPServerToolsResponse {
   total: number;
   limit: number;
 }
+
+// ── Workflow Secrets ─────────────────────────────────────────────────────────
+
+export interface WorkflowSecretMetadata {
+  id: string;
+  workflow_id: string;
+  key: string;
+  secret_type: string;
+  end_user_id?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EndUserSecretsSummary {
+  end_user_id: string;
+  secrets: WorkflowSecretMetadata[];
+}
+
+export interface GenerateSecretsLinkResponse {
+  link: string;
+  token: string;
+  end_user_id: string;
+  expires_in: string;
+}
+
+export interface SecretActionResponse {
+  success: boolean;
+  key: string;
+}
+
+// ── LLM ──────────────────────────────────────────────────────────────────────
+
+export interface ChatCompletionMessage {
+  role: string;
+  content: string | null;
+}
+
+export interface ChatCompletionChoice {
+  index: number;
+  message: ChatCompletionMessage;
+  finish_reason: string | null;
+}
+
+export interface ChatCompletionUsage {
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+}
+
+export interface ChatCompletion {
+  id: string;
+  object: string;
+  created: number;
+  model: string;
+  choices: ChatCompletionChoice[];
+  usage?: ChatCompletionUsage;
+}
