@@ -7,7 +7,7 @@ import type {
   WorkflowFullResponse,
   WorkflowVersion,
   WorkflowVersionListResponse,
-  StartNodesResponse,
+  EntryNodesResponse,
   RunResponse,
   ExecutionTreeResponse,
   HistoryResponse,
@@ -30,7 +30,8 @@ export interface ListWorkflowsParams {
 export interface RunWorkflowParams {
   workflow_version_id: string;
   chat_id: string;
-  start_node_id: string;
+  /** Multi-select agent entry node IDs */
+  entry_node_ids?: string[];
   query: string;
   files?: WorkflowRequestFile[];
   additional_params?: Record<string, unknown>;
@@ -92,11 +93,11 @@ export class WorkflowService {
     });
   }
 
-  /** Get start nodes for a workflow version. */
-  async getStartNodes(workflowVersionId: string, options?: RequestOptions): Promise<StartNodesResponse> {
+  /** Get entry nodes for a workflow version. */
+  async getEntryNodes(workflowVersionId: string, options?: RequestOptions): Promise<EntryNodesResponse> {
     return this.transport.request({
       method: "GET",
-      path: `/workflows/${workflowVersionId}/start-nodes`,
+      path: `/workflows/${workflowVersionId}/entry-nodes`,
       signal: options?.signal,
       headers: options?.headers,
     });

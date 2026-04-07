@@ -153,16 +153,16 @@ describe("WorkflowService", () => {
     expect(result.versions).toHaveLength(1);
   });
 
-  it("getStartNodes() returns nodes", async () => {
+  it("getEntryNodes() returns nodes", async () => {
     setHandler((req, res) => {
-      expect(req.url).toBe("/workflows/wv_1/start-nodes");
+      expect(req.url).toBe("/workflows/wv_1/entry-nodes");
       res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ nodes: [{ id: "n_1", workflow_version_id: "wv_1", node_type: "start", label: "Start" }] }));
+      res.end(JSON.stringify({ nodes: [{ id: "n_1", workflow_version_id: "wv_1", node_type: "agent", label: "Agent" }] }));
     });
 
     const client = makeClient();
-    const result = await client.workflows.getStartNodes("wv_1");
-    expect(result.nodes[0].label).toBe("Start");
+    const result = await client.workflows.getEntryNodes("wv_1");
+    expect(result.nodes[0].label).toBe("Agent");
   });
 
   it("run() sends correct body and returns request ID", async () => {
@@ -177,7 +177,7 @@ describe("WorkflowService", () => {
     const result = await client.workflows.run({
       workflow_version_id: "wv_1",
       chat_id: "chat_1",
-      start_node_id: "n_1",
+      entry_node_ids: ["n_1"],
       query: "hello",
     });
 
@@ -238,7 +238,7 @@ describe("WorkflowService", () => {
   it("listen() opens SSE stream", async () => {
     setHandler((_req, res) => {
       res.writeHead(200, { "Content-Type": "text/event-stream" });
-      res.write('data: {"workflow_request":{"id":"wr_1","status":"completed","workflow_version_id":"v1","start_node_id":"n1","created_at":"now"}}\n\n');
+      res.write('data: {"workflow_request":{"id":"wr_1","status":"completed","workflow_version_id":"v1","created_at":"now"}}\n\n');
       res.end();
     });
 

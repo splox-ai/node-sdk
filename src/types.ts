@@ -60,7 +60,8 @@ export interface WorkflowRequestFile {
 export interface WorkflowRequest {
   id: string;
   workflow_version_id: string;
-  start_node_id: string;
+  /** Multi-select agent entry node IDs */
+  entry_node_ids?: string[];
   status: string;
   created_at: string;
   user_id?: string;
@@ -255,7 +256,7 @@ export interface WorkflowFullResponse {
   edges: Edge[];
 }
 
-export interface StartNodesResponse {
+export interface EntryNodesResponse {
   nodes: Node[];
 }
 

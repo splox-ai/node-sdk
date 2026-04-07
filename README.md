@@ -42,14 +42,14 @@ const version = await client.workflows.getLatestVersion("workflow_id");
 // List all versions
 const { versions } = await client.workflows.listVersions("workflow_id");
 
-// Get start nodes
-const { nodes } = await client.workflows.getStartNodes("version_id");
+// Get entry nodes
+const { nodes } = await client.workflows.getEntryNodes("version_id");
 
 // Run a workflow
 const { workflow_request_id } = await client.workflows.run({
   workflow_version_id: "version_id",
   chat_id: "chat_id",
-  start_node_id: "node_id",
+  entry_node_ids: ["node_id"],
   query: "Hello!",
 });
 

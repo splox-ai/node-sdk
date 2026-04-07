@@ -15,7 +15,7 @@ describe.skipIf(!apiKey)("Integration tests", () => {
   let client: Splox;
   let workflowId: string;
   let workflowVersionId: string;
-  let startNodeId: string;
+  let entryNodeId: string;
   let chat: Chat;
 
   beforeAll(() => {
@@ -53,11 +53,11 @@ describe.skipIf(!apiKey)("Integration tests", () => {
     console.log(`  → ${result.versions.length} versions`);
   });
 
-  it("5. gets start nodes", async () => {
-    const result = await client.workflows.getStartNodes(workflowVersionId);
+  it("5. gets entry nodes", async () => {
+    const result = await client.workflows.getEntryNodes(workflowVersionId);
     expect(result.nodes.length).toBeGreaterThan(0);
-    startNodeId = result.nodes[0].id;
-    console.log(`  → start node: ${startNodeId} (${result.nodes[0].label})`);
+    entryNodeId = result.nodes[0].id;
+    console.log(`  → entry node: ${entryNodeId} (${result.nodes[0].label})`);
   });
 
   // ── Chat ─────────────────────────────────────────────────────────────────
@@ -89,7 +89,7 @@ describe.skipIf(!apiKey)("Integration tests", () => {
     const { workflow_request_id } = await client.workflows.run({
       workflow_version_id: workflowVersionId,
       chat_id: chat.id,
-      start_node_id: startNodeId,
+      entry_node_ids: [entryNodeId],
       query: "Hello from node-sdk integration test",
     });
     expect(workflow_request_id).toBeDefined();

@@ -41,7 +41,6 @@ describe("SSEStream", () => {
         id: "req_1",
         status: "running",
         workflow_version_id: "wv_1",
-        start_node_id: "n_1",
         created_at: "2026-01-01T00:00:00Z",
       },
     });
@@ -89,7 +88,7 @@ describe("SSEStream", () => {
 
   it("skips comment lines and empty lines", async () => {
     const payload = JSON.stringify({
-      workflow_request: { id: "req_1", status: "completed", workflow_version_id: "wv_1", start_node_id: "n_1", created_at: "now" },
+      workflow_request: { id: "req_1", status: "completed", workflow_version_id: "wv_1", created_at: "now" },
     });
     const data = `: this is a comment\n\ndata: ${payload}\n\n`;
     const response = makeSSEResponse(data);
@@ -101,9 +100,9 @@ describe("SSEStream", () => {
   });
 
   it("handles multiple events in one stream", async () => {
-    const ev1 = JSON.stringify({ workflow_request: { id: "req_1", status: "running", workflow_version_id: "v1", start_node_id: "n1", created_at: "now" } });
+    const ev1 = JSON.stringify({ workflow_request: { id: "req_1", status: "running", workflow_version_id: "v1", created_at: "now" } });
     const ev2 = JSON.stringify({ node_execution: { id: "ne_1", workflow_request_id: "req_1", node_id: "n1", workflow_version_id: "v1", status: "running" } });
-    const ev3 = JSON.stringify({ workflow_request: { id: "req_1", status: "completed", workflow_version_id: "v1", start_node_id: "n1", created_at: "now" } });
+    const ev3 = JSON.stringify({ workflow_request: { id: "req_1", status: "completed", workflow_version_id: "v1", created_at: "now" } });
 
     const data = `data: ${ev1}\n\ndata: keepalive\n\ndata: ${ev2}\n\ndata: ${ev3}\n\n`;
     const response = makeSSEResponse(data);

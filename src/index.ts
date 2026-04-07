@@ -63,7 +63,7 @@ export type {
   SSEEvent,
   WorkflowListResponse,
   WorkflowFullResponse,
-  StartNodesResponse,
+  EntryNodesResponse,
   WorkflowVersionListResponse,
   RunResponse,
   ExecutionTreeResponse,
