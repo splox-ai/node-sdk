@@ -1,4 +1,4 @@
-export { Splox } from "./client.js";
+export { Splox, Splox as SploxClient } from "./client.js";
 export { Splox as default } from "./client.js";
 
 // Services (for type imports)
@@ -8,6 +8,7 @@ export { EventService } from "./events.js";
 export { BillingService } from "./billing.js";
 export { MemoryService } from "./memory.js";
 export { MCPService, generateConnectionToken, generateConnectionLink } from "./mcp.js";
+export { AgentService, AgentRun, AgentResult, AgentError } from "./agents.js";
 export { LLMService } from "./llm.js";
 
 // Parameter types
@@ -26,6 +27,7 @@ export type {
   MemoryDeleteParams,
 } from "./memory.js";
 export type { CatalogParams, ConnectionParams, ExecuteToolParams } from "./mcp.js";
+export type { SpawnAgentOptions, GatherAgentsOptions } from "./agents.js";
 export type { ChatParams } from "./llm.js";
 
 // SSE
@@ -92,6 +94,9 @@ export type {
   MCPExecuteToolResponse,
   MCPServerToolOption,
   MCPServerToolsResponse,
+  AgentSpawnResponse,
+  AgentGatherResult,
+  AgentGatherResponse,
   WorkflowSecretMetadata,
   EndUserSecretsSummary,
   GenerateSecretsLinkResponse,

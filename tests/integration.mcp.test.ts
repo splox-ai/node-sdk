@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { Splox } from "../src/client.js";
 
 const apiKey = process.env.SPLOX_API_KEY;
-const baseURLRaw = process.env.SPLOX_BASE_URL || "https://app.splox.io/api/v1";
+const baseURLRaw = process.env.SPLOX_BASE_URL || "https://splox.io/api/v1";
 const baseURL = /^https?:\/\//.test(baseURLRaw) ? baseURLRaw : `https://${baseURLRaw}`;
 
 const searchQuery = process.env.SPLOX_MCP_SEARCH_QUERY || "";

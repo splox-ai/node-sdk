@@ -473,6 +473,26 @@ export interface MCPServerToolsResponse {
   limit: number;
 }
 
+// ── Agents ───────────────────────────────────────────────────────────────────
+
+export interface AgentSpawnResponse {
+  run_id: string;
+}
+
+export interface AgentResult {
+  run_id: string;
+  status: string;
+  result?: string;
+  error?: string;
+}
+
+export interface AgentGatherResult extends AgentResult {}
+
+export interface AgentGatherResponse {
+  results: AgentGatherResult[];
+  all_terminal?: boolean;
+}
+
 // ── Workflow Secrets ─────────────────────────────────────────────────────────
 
 export interface WorkflowSecretMetadata {

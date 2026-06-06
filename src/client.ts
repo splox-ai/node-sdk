@@ -5,9 +5,10 @@ import { EventService } from "./events.js";
 import { BillingService } from "./billing.js";
 import { MemoryService } from "./memory.js";
 import { MCPService } from "./mcp.js";
+import { AgentService } from "./agents.js";
 import { LLMService } from "./llm.js";
 
-const DEFAULT_BASE_URL = "https://app.splox.io/api/v1";
+const DEFAULT_BASE_URL = "https://splox.io/api/v1";
 
 /**
  * Configuration options for the Splox client.
@@ -52,11 +53,12 @@ export class Splox {
   readonly billing: BillingService;
   readonly memory: MemoryService;
   readonly mcp: MCPService;
+  readonly agents: AgentService;
   readonly llm: LLMService;
 
   constructor(apiKey?: string, options?: SploxOptions) {
     const key = apiKey ?? (typeof process !== "undefined" ? process.env.SPLOX_API_KEY : undefined) ?? "";
-    const baseURL = options?.baseURL ?? DEFAULT_BASE_URL;
+    const baseURL = options?.baseURL ?? (typeof process !== "undefined" ? process.env.SPLOX_BASE_URL : undefined) ?? DEFAULT_BASE_URL;
     const fetchFn = options?.fetch ?? globalThis.fetch;
 
     if (!fetchFn) {
@@ -73,6 +75,7 @@ export class Splox {
     this.billing = new BillingService(transport);
     this.memory = new MemoryService(transport);
     this.mcp = new MCPService(transport);
+    this.agents = new AgentService(transport);
     this.llm = new LLMService(transport);
   }
 

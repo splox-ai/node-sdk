@@ -78,6 +78,46 @@ describe("Splox", () => {
       else process.env.SPLOX_API_KEY = original;
     }
   });
+
+  it("falls back to SPLOX_BASE_URL env var", async () => {
+    const original = process.env.SPLOX_BASE_URL;
+    process.env.SPLOX_BASE_URL = baseURL;
+    let url: string | undefined;
+    try {
+      setHandler((req, res) => {
+        url = req.url;
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ workflows: [], pagination: { limit: 20, has_more: false } }));
+      });
+
+      const client = new Splox("test-key");
+      await client.workflows.list();
+      expect(url).toBe("/workflows");
+    } finally {
+      if (original === undefined) delete process.env.SPLOX_BASE_URL;
+      else process.env.SPLOX_BASE_URL = original;
+    }
+  });
+
+  it("prefers explicit baseURL over SPLOX_BASE_URL env var", async () => {
+    const original = process.env.SPLOX_BASE_URL;
+    process.env.SPLOX_BASE_URL = "https://env.example.com/api/v1";
+    let url: string | undefined;
+    try {
+      setHandler((req, res) => {
+        url = req.url;
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ workflows: [], pagination: { limit: 20, has_more: false } }));
+      });
+
+      const client = new Splox("test-key", { baseURL });
+      await client.workflows.list();
+      expect(url).toBe("/workflows");
+    } finally {
+      if (original === undefined) delete process.env.SPLOX_BASE_URL;
+      else process.env.SPLOX_BASE_URL = original;
+    }
+  });
 });
 
 // ── Workflow tests ───────────────────────────────────────────────────────────
