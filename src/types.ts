@@ -493,6 +493,16 @@ export interface AgentGatherResponse {
   all_terminal?: boolean;
 }
 
+export interface AgentStopResult {
+  run_id: string;
+  status: string;
+}
+
+export interface AgentStopResponse {
+  results: AgentStopResult[];
+}
+
+
 // ── Workflow Secrets ─────────────────────────────────────────────────────────
 
 export interface WorkflowSecretMetadata {

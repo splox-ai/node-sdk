@@ -1,6 +1,6 @@
 import type { Transport } from "./transport.js";
 import type { RequestOptions } from "./client.js";
-import type { AgentGatherResponse, AgentSpawnResponse } from "./types.js";
+import type { AgentGatherResponse, AgentSpawnResponse, AgentStopResponse, AgentStopResult } from "./types.js";
 
 export interface SpawnAgentOptions {
   /** Target agent tool name. */
@@ -65,6 +65,11 @@ export class AgentRun {
     }
     throw timeoutError(`agent run ${this.run_id} did not finish before timeout`);
   }
+
+  /** Stop this child agent run. */
+  async stop(options?: RequestOptions): Promise<AgentStopResult[]> {
+    return this.agents.stop([this], options);
+  }
 }
 
 function getParentRunID(): string {
@@ -123,6 +128,19 @@ export class AgentService {
   }
 
   /** Gather child agent results by polling bounded server waits. Never raises for agent failures. */
+  async stop(runs: Array<AgentRun | string>, options?: RequestOptions): Promise<AgentStopResult[]> {
+    const runIds = runs.map(runID);
+    if (runIds.length === 0) return [];
+    const resp = await this.transport.request<AgentStopResponse>({
+      method: "POST",
+      path: "/agents/stop",
+      body: { run_ids: runIds },
+      signal: options?.signal,
+      headers: options?.headers,
+    });
+    return resp.results ?? [];
+  }
+
   async gather(
     runs: Array<AgentRun | string>,
     params?: GatherAgentsOptions,
