@@ -1,5 +1,8 @@
 import { ConnectionError, throwOnError } from "./errors.js";
 
+/** Default per-request timeout (ms). Matches the Python/Go SDK default of 300s. */
+const DEFAULT_TIMEOUT_MS = 300_000;
+
 export interface RequestOptions {
   method: string;
   path: string;
@@ -46,7 +49,7 @@ export class Transport {
         method: options.method,
         headers,
         body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
-        signal: options.signal,
+        signal: options.signal ?? AbortSignal.timeout(DEFAULT_TIMEOUT_MS),
       });
     } catch (err) {
       throw new ConnectionError(
